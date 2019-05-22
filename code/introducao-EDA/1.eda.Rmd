@@ -1,7 +1,7 @@
 ---
 title: "Eda-1"
-author: "Raquel Lopes e Nazareno Andrade"
-date: "6/6/2018"
+author: "Matheus Thiago"
+date: "21/05/2019"
 output: html_document
 ---
 
@@ -28,8 +28,8 @@ Para entender os dados precisamos conhecer suas escalas.
 * Escala de razão.
 
 ```{r}
-setwd("/Users/raquelvl/Documents/raquel/disciplinas/2018.1/MC/aulas/")
-alunos.tudo <- read_csv("dados/alunos-ad1.csv")
+setwd("/Users/PC-CASA/Documents/GitHub/reclamacoes-do-gf/code/introducao-EDA")
+alunos.tudo <- read_csv("alunos-ad1.csv")
 ```
 
 ```{r}
@@ -40,7 +40,7 @@ glimpse(alunos.tudo)
 
 ```{r}
 # você pode especificar os tipos das colunas, por exemplo: 
-alunos.tudo = read_csv("dados/alunos-ad1.csv", 
+alunos.tudo = read_csv("alunos-ad1.csv", 
                        col_types = "ccciiiiiiici??c")
 
 ```

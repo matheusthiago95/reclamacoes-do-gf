@@ -1,0 +1,59 @@
+---
+title: "Eda-1"
+author: "Matheus Thiago"
+date: "21/05/2019"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(rvest)
+library(stringr)
+theme_set(theme_bw())
+```
+
+```{r}
+setwd("/Users/PC-CASA/Documents/GitHub/reclamacoes-do-gf")
+avaliacoes_raw <- read_csv("data/3-avaliacao-humana/reclamacoes-avaliadas-20190515.csv")
+```
+```{r}
+glimpse(avaliacoes_raw)
+```
+```{r}
+avaliacoes <- avaliacoes_raw %>% select(id = "id", 
+                                   id.orgao = "orgao", 
+                                    id.data = "data",
+                                   id.titulo = "titulo",
+                                   id.grupo = "Grupo que vai avaliar",
+                                   id.mediaAvaliacao = "insatisfacao",
+                                   id.avaliadores = "avaliadores",
+                                   id.rangeAvaliacoes = "range.avaliacoes")
+```
+```{r}
+glimpse(avaliacoes)
+```
+```{r}
+#falta corrigir dessa parte em diante
+avaliacoes <- avaliacoes %>% select(id.reclamacao, avaliacao) %>% 
+              group_by(id.reclamacao) %>% 
+              summarise(insatisfacao = median(avaliacao), 
+                        avaliadores = n(),
+                        range.avaliacoes = (max(avaliacao) - min(avaliacao)))
+
+#quantas avaliações tem discordancia de avaliação maior que 2? Será que devemos confiar nessas avaliações?
+avaliacoes %>% filter(range.avaliacoes > 2) 
+```
+
+```{r}
+reclamacoes.avaliadas <- read_csv("data/1-reclamacoes-selecionadas/20180605-reclamacoes-selecionadas_sem-repeticao.csv")
+```
+```{r}
+names(reclamacoes.avaliadas)
+names(avaliacoes)
+```
+```{r}
+reclamacoes <- left_join(reclamacoes.avaliadas, avaliacoes, 
+                         by = c("id" = "id.reclamacao"))
+
+reclamacoes %>%  write_csv("data/3-avaliacao-humana/reclamacoes-avaliadas-20180703.csv")
+```
