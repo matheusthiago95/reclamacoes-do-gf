@@ -21,13 +21,14 @@ glimpse(avaliacoes_raw)
 ```
 ```{r}
 avaliacoes <- avaliacoes_raw %>% select(id = "id", 
-                                   id.orgao = "orgao", 
-                                    id.data = "data",
-                                   id.titulo = "titulo",
-                                   id.grupo = "Grupo que vai avaliar",
-                                   id.mediaAvaliacao = "insatisfacao",
-                                   id.avaliadores = "avaliadores",
-                                   id.rangeAvaliacoes = "range.avaliacoes")
+                                   orgao = "orgao", 
+                                    data = "data",
+                                   titulo = "titulo",
+                                   grupo = "Grupo que vai avaliar",
+                                   mediaAvaliacao = "insatisfacao",
+                                   avaliadores = "avaliadores",
+                                   rangeAvaliacoes = "range.avaliacoes")
+avaliacoes %>% View()
 ```
 ```{r}
 glimpse(avaliacoes)
