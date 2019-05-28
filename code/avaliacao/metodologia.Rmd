@@ -40,6 +40,14 @@ Dado estas informações, precisamos extrair características importantes para d
 ## Em termos gerais, como o governo é avaliado
 Para termos uma visão geral, podemos tentar avaliar em termos gerais, como o governo é avaliado em relação aos seus serviços.
 
+##Adicionando quantidade de letras em Capslock do titulo e do texto
+
+```{r}
+avaliacoes_raw$Casplock_no_titulo <- str_count(avaliacoes_raw$titulo, "\\b[A-Z]{2,}\\b")
+avaliacoes_raw$Casplock_no_texto <- str_count(avaliacoes_raw$texto, "\\b[A-Z]{2,}\\b")
+```
+
+
 ### Média
 Uma das métricas que temos para realizar essa avaliação é a média.
 ```{r}
@@ -93,3 +101,43 @@ avaliacoes %>% filter(orgao == "ANS") %>% filter(!is.na(mediaAvaliacao)) %>% gro
 Quantidades das Médias das Avaliações da ANS, onde o eixo x são as médias e o eixo y as quantidades para cada média.
 
 
+##Regressão entre as variaveis insatisfacão e quantidade de letras em casplock no texto
+
+```{r}
+dados_regressao <- data.frame(avaliacoes_raw$insatisfacao, avaliacoes_raw$Casplock_no_texto) #criando um data frame
+is.data.frame(dados_regressao) #verifica se dados é um data.frame
+
+regressao<-lm(avaliacoes_raw$insatisfacao~avaliacoes_raw$Casplock_no_texto,data=dados_regressao) 
+regressao
+
+summary(regressao)
+```
+
+##GRAFICO DA REGRESSÃO
+
+```{r}
+#plot(x,y) ou
+z = plot(avaliacoes_raw$insatisfacao, avaliacoes_raw$Casplock_no_texto)
+grid(z) #aplicando grid ao gráfico
+abline(regressao)
+```
+
+##Regressão entre as variaveis insatisfacão e quantidade de letras em casplock no titulo
+
+```{r}
+dados_regressao_titulo <- data.frame(avaliacoes_raw$insatisfacao, avaliacoes_raw$Casplock_no_texto) #criando um data frame
+is.data.frame(dados_regressao_titulo) #verifica se dados é um data.frame
+
+regressao<-lm(avaliacoes_raw$insatisfacao~avaliacoes_raw$Casplock_no_titulo,data=dados_regressao_titulo) 
+regressao
+
+summary(regressao)
+```
+##GRAFICO DA REGRESSÃO
+
+```{r}
+#plot(x,y) ou
+z = plot(avaliacoes_raw$insatisfacao, avaliacoes_raw$Casplock_no_titulo)
+grid(z) #aplicando grid ao gráfico
+abline(regressao)
+```
