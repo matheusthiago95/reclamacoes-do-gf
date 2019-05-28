@@ -18,9 +18,21 @@ Antes de começarmos, é importante entender o contexto do nosso problema:
 Temos como dados, algumas ocorrências de avaliações direcionadas ao Governo Federal registradas no Reclame Aqui!
 Também possuímos amostras rotuladas por nível de insatisfação
 ```{r}
-avaliacoes <- read_csv("reclamacoes-avaliadas-20190515.csv")
+avaliacoes_raw <- read_csv("reclamacoes-avaliadas-20190515.csv")
 ```
-
+## Mudança dos nomes das variáveis
+```{r}
+avaliacoes <- avaliacoes_raw %>% select(id = "id", 
+                                   orgao = "orgao", 
+                                    data = "data",
+                                   titulo = "titulo",
+                                   grupo = "Grupo que vai avaliar",
+                                   mediaAvaliacao = "insatisfacao",
+                                   avaliadores = "avaliadores",
+                                   rangeAvaliacoes = "range.avaliacoes")
+avaliacoes %>% View()
+glimpse(avaliacoes)
+```
 ## Qual nosso objetivo?
 Dado estas informações, precisamos extrair características importantes para descrever o comportamento dos dados
 
@@ -31,7 +43,7 @@ Para termos uma visão geral, podemos tentar avaliar em termos gerais, como o go
 ### Média
 Uma das métricas que temos para realizar essa avaliação é a média.
 ```{r}
-media_insatisfacao <- mean(x = avaliacoes$insatisfacao)
+media_insatisfacao <- mean(x = avaliacoes_raw$insatisfacao)
 message("Média de insatisfação: ", media_insatisfacao)
 ```
 Como podemos ver, em termos de média, o governo possui um nível de insatisfação relativamente baixo (estando abaixo da métade do nível de insatisfação total).
@@ -39,7 +51,7 @@ Como podemos ver, em termos de média, o governo possui um nível de insatisfaç
 ### Mediana
 Outra métrica interessante para uma visão geral, é a mediana, ela evita viés criado por possíveis "outliers"
 ```{r}
-mediana_insatisfacao <- median(x = avaliacoes$insatisfacao)
+mediana_insatisfacao <- median(x = avaliacoes_raw$insatisfacao)
 message("Médiana de insatisfação: ", mediana_insatisfacao)
 ```
 A partir destas métricas, podemos concluir que dentre as amostras fornecidas e rotuladas, em termos de ambas as métricas(media e mediana), o governo possui um nível de insatisfação baixo/médio.
@@ -48,11 +60,36 @@ A partir destas métricas, podemos concluir que dentre as amostras fornecidas e 
 ## Avaliando o nível de uniformidade das avaliações
 Dado que agora temos uma visão geral sobre o nível de insatisfação.Podemos avaliar o nível de uniformidade, espaçamento  das avaliações.
 ```{r}
-m_av_range <- mean(x = avaliacoes$range.avaliacoes)
+m_av_range <- mean(x = avaliacoes_raw$range.avaliacoes)
 message("Média de intervalo entre avaliações: ", m_av_range)
 ```
 Como podemos ver,temos um intervalo alto entre a classificação das avaliações.Isso denota um problema de confiabilidade em relação os métodos de avaliação.Pois, em termos gerais, cada reclamação possui avaliações com quase dois pontos de diferença em relação a sua classificação (o que é alto, se considerado que temos um intervalo máximo de 5 pontos).
 
+## Números das avaliações por orgão
+```{r}
+table(avaliacoes$orgao)
+```
+## Gráficos de barras
+```{r}
+ggplot(avaliacoes %>% filter(!is.na(mediaAvaliacao))) +
+    geom_bar(mapping = aes(x = mediaAvaliacao))
+```
 
+Quantidade total das Médias das Avaliações da ANATEL e ANS, onde o eixo x são as médias e o eixo y as quantidades para cada média.
+
+## Avaliação das Médias da ANATEL
+```{r}
+avaliacoes %>% filter(orgao == "ANATEL") %>% filter(!is.na(mediaAvaliacao)) %>% group_by(mediaAvaliacao) %>% summarise(quantos = n()) %>% ggplot() + geom_col(mapping = aes(x = mediaAvaliacao, y = quantos))
+
+```
+
+Quantidades das Médias das Avaliações da ANATEL, onde o eixo x são as médias e o eixo y as quantidades para cada média.
+
+## Avaliação das Médias da ANS
+```{r}
+avaliacoes %>% filter(orgao == "ANS") %>% filter(!is.na(mediaAvaliacao)) %>% group_by(mediaAvaliacao) %>% summarise(quantos = n()) %>% ggplot() + geom_col(mapping = aes(x = mediaAvaliacao, y = quantos))
+```
+
+Quantidades das Médias das Avaliações da ANS, onde o eixo x são as médias e o eixo y as quantidades para cada média.
 
 
