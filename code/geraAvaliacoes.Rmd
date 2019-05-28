@@ -29,32 +29,26 @@ avaliacoes <- avaliacoes_raw %>% select(id = "id",
                                    avaliadores = "avaliadores",
                                    rangeAvaliacoes = "range.avaliacoes")
 avaliacoes %>% View()
-```
-```{r}
 glimpse(avaliacoes)
 ```
 ```{r}
-#falta corrigir dessa parte em diante
-avaliacoes <- avaliacoes %>% select(id.reclamacao, avaliacao) %>% 
-              group_by(id.reclamacao) %>% 
-              summarise(insatisfacao = median(avaliacao), 
-                        avaliadores = n(),
-                        range.avaliacoes = (max(avaliacao) - min(avaliacao)))
-
-#quantas avaliações tem discordancia de avaliação maior que 2? Será que devemos confiar nessas avaliações?
-avaliacoes %>% filter(range.avaliacoes > 2) 
+table(avaliacoes$orgao)
 ```
+Números de avaliação da ANS e ANATEL
+
+## Gráficos de barras
+```{r}
+ggplot(avaliacoes %>% filter(!is.na(mediaAvaliacao))) +
+    geom_bar(mapping = aes(x = mediaAvaliacao))
+```
+Quantidade das Médias das Avaliações da ANATEL e ANS 
 
 ```{r}
-reclamacoes.avaliadas <- read_csv("data/1-reclamacoes-selecionadas/20180605-reclamacoes-selecionadas_sem-repeticao.csv")
-```
-```{r}
-names(reclamacoes.avaliadas)
-names(avaliacoes)
-```
-```{r}
-reclamacoes <- left_join(reclamacoes.avaliadas, avaliacoes, 
-                         by = c("id" = "id.reclamacao"))
+avaliacoes %>% filter(orgao == "ANATEL") %>% filter(!is.na(mediaAvaliacao)) %>% group_by(mediaAvaliacao) %>% summarise(quantos = n()) %>% ggplot() + geom_col(mapping = aes(x = mediaAvaliacao, y = quantos))
 
-reclamacoes %>%  write_csv("data/3-avaliacao-humana/reclamacoes-avaliadas-20180703.csv")
 ```
+Quantidades das Médias das Avaliações da ANATEL
+```{r}
+avaliacoes %>% filter(orgao == "ANS") %>% filter(!is.na(mediaAvaliacao)) %>% group_by(mediaAvaliacao) %>% summarise(quantos = n()) %>% ggplot() + geom_col(mapping = aes(x = mediaAvaliacao, y = quantos))
+```
+
