@@ -1,7 +1,7 @@
 ---
 title: "Avaliação do grau de insatisfação de reclamações com o gf"
-author: "Matheus, Ionésio Junior,Antonio Pedro"
-date: "6/6/2018"
+author: "Matheus Thiago, Ionésio Junior,Antonio Pedro"
+date: "28/05/2019"
 output: html_document
 ---
 
