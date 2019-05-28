@@ -51,4 +51,5 @@ Quantidades das Médias das Avaliações da ANATEL
 ```{r}
 avaliacoes %>% filter(orgao == "ANS") %>% filter(!is.na(mediaAvaliacao)) %>% group_by(mediaAvaliacao) %>% summarise(quantos = n()) %>% ggplot() + geom_col(mapping = aes(x = mediaAvaliacao, y = quantos))
 ```
+Quantidades das Médias das Avaliações da ANS
 
