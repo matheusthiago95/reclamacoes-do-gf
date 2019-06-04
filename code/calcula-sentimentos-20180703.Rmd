@@ -12,7 +12,7 @@ theme_set(theme_bw())
 ```
 
 ```{r carrega}
-reclamacoes = read_csv(here("data/3-avaliacao-humana/reclamacoes-avaliadas-20181113.csv"))
+reclamacoes = read_csv(here("data/3-avaliacao-humana/reclamacoes-avaliadas-20190515.csv"))
 
 #reclamacoes = reclamacoes_raw %>% 
 #    mutate(
@@ -40,8 +40,8 @@ Precisamos de um dataframe onde cada observacao eh uma palavra.
 
 ```{r separa}
 palavra_a_palavra = reclamacoes %>% 
-    select(id, reclamacao) %>% 
-    unnest_tokens(termo, reclamacao)
+    select(id, texto) %>% 
+    unnest_tokens(termo, texto)
 
 palavra_a_palavra %>%
   select(id, termo) %>%
@@ -64,6 +64,6 @@ sentimentos = palavras_com_sentimento %>%
               palavras = n())
 
 sentimentos %>% 
-    write_csv(here("data/5-sentimentos/sentimento.csv"))
+    write_csv(here("code/data/sentimento.csv"))
 ```
 
