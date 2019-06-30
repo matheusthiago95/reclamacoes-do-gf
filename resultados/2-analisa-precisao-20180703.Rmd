@@ -160,4 +160,3 @@ shapiro.test(resid(anova))
 ```{r}
 view(reclamacoes_l)
 ```
-```
