@@ -54,8 +54,30 @@ reclamacoes_l = reclamacoes_l %>%
 ```
 ```{r}
 mediana <- median(x = reclamacoes_l$insatisfacao)
-message("Médiana de insatisfação: ", mediana_insatisfacao)
+message("Médiana de insatisfação: ", mediana)
 ```
+```{r}
+filtroReclamacoes = reclamacoes_l %>% select(id_reclamacao = id, Insatisfação = insatisfacao, Polaridade = polaridade, Polaridade_Normalizada = polaridade_normalizada, Palavras = palavras, Comprimento = comprimento_reclamacao, Lexico = lexico, Erro = erro)
+```
+
+```{r}
+LexicoSent = filtroReclamacoes %>% filter(Lexico == 'sentimento_sent')
+LexicoOp30 = filtroReclamacoes %>% filter(Lexico == 'sentimento_op30')
+LexicoSent = LexicoSent[order(LexicoSent$id_reclamacao),]
+sLexicoOp30 = LexicoOp30[order(LexicoOp30$id_reclamacao),]
+# reclamação x Polaridade normalizada
+barplot(LexicoSent$Polaridade_Normalizada, 
+        main="Nível de insatisfação - Sent",
+        xlab=LexicoSent$id_reclamacao, 
+        names.arg = LexicoSent$id_reclamacao
+)
+barplot(LexicoOp30$Polaridade_Normalizada,
+        main="Nível de insatisfação - Op30",
+        xlab=LexicoOp30$id_reclamacao,
+        names.arg = LexicoOp30$id_reclamacao
+)
+```
+
 
 ```{r}
   ggplot(reclamacoes_l %>% filter(!is.na(polaridade_normalizada))) +
@@ -113,6 +135,29 @@ reclamacoes_l = reclamacoes_l %>% mutate(lexico.dummy = if_else(lexico == "senti
 
 Regressão múltipla foi utilizada para analisar se VarIndep1 e VarIndep2 tem uma associação significativa com o erro na estimativa de instatisfação da reclemação. Os resultados da regressão indicam que um modelo com os 2 preditores no formato Erro = XXX.VarIndep1 + YYY.VarIndep2 explicam XX,XX% da variância da variável de resposta (R2 = XX,XX). VarIndep1, medida como/em [unidade ou o que é o 0 e o que é 1] tem uma relação significativa com o erro (b = [yy,yy;  zz,zz], IC com 95%), assim como VarIndep2 medida como [unidade ou o que é o 0 e o que é 1] (b = [yy,yy;  zz,zz], IC com 95%). O aumento de 1 unidade de VarIndep1 produz uma mudança de...
 
+
+#Regressão linear multipla
+```{r}
+y = reclamacoes$insatisfacao
+op30 = LexicoOp30$Polaridade_Normalizada
+sents = LexicoSent$Polaridade_Normalizada
+regressao = lm(y ~ 
+                 op30 +
+                 sents
+)
+summary(regressao)
+```
+
+#Anova e Teste de normalidade
+```{r}
+anova = aov(y ~ op30 + sents)
+summary(anova)
+
+shapiro.test(resid(anova))
+```
+
+
 ```{r}
 view(reclamacoes_l)
+```
 ```
